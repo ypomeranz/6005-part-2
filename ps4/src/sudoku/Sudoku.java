@@ -7,6 +7,8 @@
 package sudoku;
 
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 import sat.env.Environment;
 import sat.env.Variable;
@@ -112,8 +114,23 @@ public class Sudoku {
      */
     public static Sudoku fromFile(int dim, String filename) throws IOException,
             ParseException {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        BufferedReader buffer=new BufferedReader(new FileReader(filename));
+        String x = buffer.readLine();
+        int j = 0;
+        int[][] square = new int[dim*dim][dim*dim];
+        while (x != null){
+            for (int i = 0; i< x.length(); i++){
+                if (x.charAt(i)=='.'){
+                    square[i][j]=0;
+                } else {
+                    square[i][j]=(int) x.charAt(i);
+                }
+            } 
+            x = buffer.readLine();
+            j++;
+        }
+        return new Sudoku(dim, square);
+        
     }
 
     /**
