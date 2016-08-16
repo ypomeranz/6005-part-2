@@ -48,7 +48,16 @@ public class Sudoku {
      */
     public Sudoku(int dim) {
         // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        this.dim = dim;
+        this.size = dim*dim;
+        this.square = new int[dim*dim][dim*dim];
+        this.occupies = new Variable[size][size][size];
+        for (int i = 0; i < (dim*dim); i++){
+            for (int j = 0; j < (dim*dim); j++){
+                square[i][j]=0;
+                occupies[i][j][0] = new Variable(Integer.toString(i)+","+Integer.toString(j)+",0");
+            }
+        }
     }
 
     /**
@@ -71,8 +80,16 @@ public class Sudoku {
      *            square[i].length for 0<=i<dim.
      */
     public Sudoku(int dim, int[][] square) {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        this.dim = dim;
+        this.size = dim*dim;
+        this.square = square;
+        this.occupies = new Variable[size][size][size];
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size; j++){
+                occupies[i][j][square[i][j]] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(square[i][j]));
+                
+            }
+        }
     }
 
     /**
