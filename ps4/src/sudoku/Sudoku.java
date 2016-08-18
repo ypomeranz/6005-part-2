@@ -53,11 +53,13 @@ public class Sudoku {
         this.dim = dim;
         this.size = dim*dim;
         this.square = new int[dim*dim][dim*dim];
-        this.occupies = new Variable[size][size][size+1];
+        this.occupies = new Variable[size][size][size*size];
+        int k = 0;
         for (int i = 0; i < (dim*dim); i++){
             for (int j = 0; j < (dim*dim); j++){
                 square[i][j]=0;
-                occupies[i][j][0] = new Variable(Integer.toString(i)+","+Integer.toString(j)+",0");
+                occupies[i][j][k] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(k));
+                k++;
             }
         }
     }
@@ -85,17 +87,13 @@ public class Sudoku {
         this.dim = dim;
         this.size = dim*dim;
         this.square = square;
-        this.occupies = new Variable[dim*dim][dim*dim][dim*dim+1];
+        this.occupies = new Variable[dim*dim][dim*dim][size*size];
+        int k = 0;
         for (int i = 0; i < size; i++){
             for (int j = 0; j < size; j++){
-                // System.out.print("i: ");
-                // System.out.println(i);
-                // System.out.print("j: ");
-                // System.out.println(j);
-                // System.out.println("k: ");
-                // System.out.println(square[i][j]);
-                occupies[i][j][square[i][j]] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(square[i][j]));
                 
+                occupies[i][j][k] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(k));
+                k++;
             }
         }
     }
