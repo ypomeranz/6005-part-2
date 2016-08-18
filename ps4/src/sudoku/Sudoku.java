@@ -53,7 +53,7 @@ public class Sudoku {
         this.dim = dim;
         this.size = dim*dim;
         this.square = new int[dim*dim][dim*dim];
-        this.occupies = new Variable[size][size][size];
+        this.occupies = new Variable[size][size][size+1];
         for (int i = 0; i < (dim*dim); i++){
             for (int j = 0; j < (dim*dim); j++){
                 square[i][j]=0;
@@ -85,9 +85,15 @@ public class Sudoku {
         this.dim = dim;
         this.size = dim*dim;
         this.square = square;
-        this.occupies = new Variable[size][size][size];
+        this.occupies = new Variable[dim*dim][dim*dim][dim*dim+1];
         for (int i = 0; i < size; i++){
             for (int j = 0; j < size; j++){
+                // System.out.print("i: ");
+                // System.out.println(i);
+                // System.out.print("j: ");
+                // System.out.println(j);
+                // System.out.println("k: ");
+                // System.out.println(square[i][j]);
                 occupies[i][j][square[i][j]] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(square[i][j]));
                 
             }
@@ -116,19 +122,21 @@ public class Sudoku {
             ParseException {
         BufferedReader buffer=new BufferedReader(new FileReader(filename));
         String x = buffer.readLine();
-        int j = 0;
+        int i = 0;
         int[][] square = new int[dim*dim][dim*dim];
         while (x != null){
-            for (int i = 0; i< x.length(); i++){
-                if (x.charAt(i)=='.'){
+            for (int j = 0; j< x.length(); j++){
+                if (x.charAt(j)=='.'){
                     square[i][j]=0;
                 } else {
-                    square[i][j]=(int) x.charAt(i);
+                    square[i][j]=Character.getNumericValue(x.charAt(j));
                 }
             } 
             x = buffer.readLine();
-            j++;
+            i++;
         }
+        //System.out.println("got here");
+        //System.out.println(java.util.Arrays.toString(square));
         return new Sudoku(dim, square);
         
     }
@@ -154,8 +162,21 @@ public class Sudoku {
      * @return a string corresponding to this grid
      */
     public String toString() {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        String newstring = "";
+        for (int x = 0; x < size; x++){
+           if (x!=0){
+               newstring = newstring + "\n";
+           }
+           for (int y = 0; y < size; y++){
+               if (square[x][y] == 0){
+                   newstring = newstring + ('.');
+               } else {
+                   newstring = newstring+(Integer.toString(square[x][y]));
+               }
+           }
+       }
+       
+        return newstring;   
     }
 
     /**
