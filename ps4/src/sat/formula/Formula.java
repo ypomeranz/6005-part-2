@@ -116,7 +116,12 @@ public class Formula {
      */
     public Formula and(Formula p) {
         // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        ImListIterator<Clause> x = new ImListIterator<Clause>(p.clauses);
+        Formula y = this;
+        while (x.hasNext()){
+            y = y.addClause(x.next());
+        }
+        return y;
     }
 
     /**
