@@ -131,8 +131,31 @@ public class Formula {
         // TODO: implement this.
         // Hint: you'll need to use the distributive law to preserve conjunctive normal form, i.e.:
         //   to do (a & b) .or (c & d),
-        //   you'll need to make (a | b) & (a | c) & (b | c) & (b | d)        
-        throw new RuntimeException("not yet implemented.");
+        //   you'll need to make (a | b) & (a | c) & (b | c) & (b | d)    
+        //Yoni - this example is wrong - should be a | d not a | b - I think?
+        /* pseudocode:
+            new empty formula
+            for clause in formula a
+                for clause in formula b
+                    add clause with elements of clause a and clause b to new empty formula
+            return new formula
+        */
+        //Note to Self: remember to allow for possibility of a null result
+        Formula x = new Formula();
+        ImListIterator<Clause> formulaA = new ImListIterator<Clause>(this.clauses);
+        while (formulaA.hasNext()){
+            ImListIterator<Clause> formulaB = new ImListIterator<Clause>(p.clauses);
+            while (formulaB.hasNext()){
+                Clause joinedClause = formulaA.next().merge(formulaB.next());
+                if (joinedClause==null){
+                    return null;
+                } else {
+                    x = x.addClause(joinedClause);    
+                }
+                
+            }
+        }
+        return x;
     }
 
     /**
