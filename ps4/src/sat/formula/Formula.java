@@ -170,7 +170,21 @@ public class Formula {
         //   you'll need to make !((a | b) & c) 
         //                       => (!a & !b) | !c            (moving negation down to the literals)
         //                       => (!a | !c) & (!b | !c)    (conjunctive normal form)
-        throw new RuntimeException("not yet implemented.");
+        
+        Formula x = new Formula();
+        for (Clause c : clauses){
+            Formula subformula = new Formula();
+            for (Literal l: c){
+                Clause singleliteralclause = new Clause(l.getNegation());
+                subformula = subformula.addClause(singleliteralclause);
+            }
+            if (x.getSize()==0){
+                x = subformula;
+            } else {
+                x = x.or(subformula);
+            }
+        }
+        return x;
     }
 
     /**
