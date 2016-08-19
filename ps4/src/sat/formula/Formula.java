@@ -115,7 +115,7 @@ public class Formula {
      * @return a new problem corresponding to the conjunction of this and p
      */
     public Formula and(Formula p) {
-        // TODO: implement this.
+        
         ImListIterator<Clause> x = new ImListIterator<Clause>(p.clauses);
         Formula y = this;
         while (x.hasNext()){
