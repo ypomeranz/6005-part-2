@@ -4,9 +4,16 @@
  * 6.005 Elements of Software Construction
  * (c) 2007-2009, MIT 6.005 Staff
  */
+ /*
+ Formula = ImList<Clause>
+ Clause = ImList<Literal>
+ Literal = PosLiteral | NegLiteral
+ */
 package sat.formula;
 
 import immutable.ImList;
+
+import immutable.*;
 
 import java.util.Iterator;
 
@@ -47,8 +54,11 @@ public class Formula {
      */
     public Formula() {
 
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+       this.clauses = new EmptyImList<Clause>();
+    }
+    
+    public Formula(ImList<Clause> clauses){
+        this.clauses=clauses;
     }
 
     /**
@@ -58,8 +68,7 @@ public class Formula {
      * @return the problem with a single clause containing the literal l
      */
     public Formula(Variable l) {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        clauses = new NonEmptyImList<Clause>(new Clause(PosLiteral.make(l)));
     }
 
     /**
@@ -68,8 +77,7 @@ public class Formula {
      * @return the problem with a single clause c
      */
     public Formula(Clause c) {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        clauses = new NonEmptyImList<Clause>(c);
     }
 
     /**
@@ -78,8 +86,9 @@ public class Formula {
      * @return a new problem with the clauses of this, but c added
      */
     public Formula addClause(Clause c) {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        Formula newForm = new Formula(clauses.add(c));
+        return newForm;
+        
     }
 
     /**
@@ -88,8 +97,7 @@ public class Formula {
      * @return list of clauses
      */
     public ImList<Clause> getClauses() {
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        return clauses;
     }
 
     /**
