@@ -148,7 +148,7 @@ public class Formula {
             while (formulaB.hasNext()){
                 Clause joinedClause = formulaA.next().merge(formulaB.next());
                 if (joinedClause==null){
-                    return null;
+                    return new Formula(new Clause());
                 } else {
                     x = x.addClause(joinedClause);    
                 }
