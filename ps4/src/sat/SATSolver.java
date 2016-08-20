@@ -69,9 +69,9 @@ public class SATSolver {
             }
             //for simplicity - our new list of clauses will contain only non-null clauses 
             if (x != null){
-                System.out.println(x.toString());
+                //System.out.println(x.toString());
                 clauzlist = clauzlist.add(x);
-                System.out.println(clauzlist.toString());
+                //System.out.println(clauzlist.toString());
             }
         }
         
@@ -85,19 +85,20 @@ public class SATSolver {
         //so we change the environment by setting the status of a variable
         //best case scenario - there's a clause with only one literal
         //otherwise remember the smallest clause
-        System.out.println("printing clauzlist");
-        System.out.println(clauzlist.toString());
+        //System.out.println("printing clauzlist");
+        //System.out.println(clauzlist.toString());
         int smallest = -1;
         Clause smallestclauz = new Clause();
         for (Clause clause : clauzlist){
             if (clause.size()==1){
                 Literal l = clause.chooseLiteral();
+                //System.out.println(l.toString());
                 if (l.toString().charAt(0)!='~'){
                     //Writing a print statement here because I'm not sure how to use getClass
-                    System.out.println("class is posliteral");
+                    //System.out.println("class is posliteral");
                     newenv = env.putTrue(l.getVariable());
                 } else if (l.toString().charAt(0)=='~'){
-                    System.out.println("class is negliteral");
+                    //System.out.println("class is negliteral");
                     newenv = env.putFalse(l.getVariable());
                 }
                 return solve(clauzlist, newenv);
@@ -111,10 +112,11 @@ public class SATSolver {
         }
         //at this point we've gone through the clauzlist and have a smallest clause that isn't of size 1
         //so pick a random literal - set to true, then recurse
-        System.out.println(smallestclauz.toString());
+        //System.out.println(smallestclauz.toString());
         Literal a = smallestclauz.chooseLiteral();
         Boolean littruth = false;
         if (a.toString().charAt(0)=='~'){
+            //System.out.println("successfully detected negative literal");
             newenv = env.putFalse(a.getVariable());
             littruth = false;
         } else {
