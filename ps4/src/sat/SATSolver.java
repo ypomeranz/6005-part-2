@@ -81,6 +81,9 @@ public class SATSolver {
         //if we've gotten to this point we still have clauses left
         //so we change the environment by setting the status of a variable
         //best case scenario - there's a clause with only one literal
+        //otherwise remember the smallest clause
+        int smallest = -1;
+        Clause smallestclauz = new Clause();
         for (Clause clause : clauzlist){
             if (clause.size()==1){
                 Literal l = clause.chooseLiteral();
@@ -93,11 +96,36 @@ public class SATSolver {
                     newenv = env.putFalse(l.getVariable());
                 }
                 return solve(clauzlist, newenv);
+            } else if (smallest == -1){
+                smallest = clause.size();
+                smallestclauz = clause;
+            } else if (clause.size() < smallest){
+                smallest = clause.size();
+                smallestclauz = clause;
             }
         }
-        
-        //this is just so it compiles - take out at the end:
-        return null;
+        //at this point we've gone through the clauzlist and have a smallest clause that isn't of size 1
+        //so pick a random literal - set to true, then recurse
+        Literal a = smallestclauz.chooseLiteral();
+        Boolean littruth;
+        if (a.toString().charAt(0)=='~'){
+            newenv = env.putFalse(a.getVariable());
+            littruth = false;
+        } else {
+            newenv = env.putTrue(a.getVariable());
+            littruth = true;
+        }
+        Environment asettotrue = solve(clauzlist, newenv);
+        if (asettotrue != null){
+            return asettotrue;
+        } else{
+            if (littruth == false){
+                newenv = env.putTrue(a.getVariable());
+            } else {
+                newenv = env.putFalse(a.getVariable());
+            }
+            return solve(clauzlist, newenv);
+        }
     }
 
     /**
