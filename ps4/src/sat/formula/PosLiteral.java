@@ -6,7 +6,7 @@
  */
 package sat.formula;
 
-import sat.env.Variable;
+import sat.env.*;
 import immutable.ImListMap;
 import immutable.ImMap;
 
@@ -50,5 +50,9 @@ public class PosLiteral extends Literal {
 
     public String toString () {
         return var.toString();
+    }
+    
+    public Bool eval (Environment e) {
+        return e.get(this.var);
     }
 }

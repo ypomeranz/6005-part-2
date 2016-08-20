@@ -6,7 +6,7 @@
  */
 package sat.formula;
 
-import sat.env.Variable;
+import sat.env.*;
 
 /**
  * A class to represent literals used in clausal form.
@@ -71,5 +71,9 @@ public abstract class Literal {
     @Override
     public boolean equals (Object o) {
         return this == o;
+    }
+    
+    public Bool eval(Environment e){
+        return this.eval(e);
     }
 }
