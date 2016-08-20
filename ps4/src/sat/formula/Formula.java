@@ -140,18 +140,14 @@ public class Formula {
                     add clause with elements of clause a and clause b to new empty formula
             return new formula
         */
-        //Note to Self: remember to allow for possibility of a null result
         Formula x = new Formula();
         ImListIterator<Clause> formulaA = new ImListIterator<Clause>(this.clauses);
         while (formulaA.hasNext()){
+            Clause y = formulaA.next();
             ImListIterator<Clause> formulaB = new ImListIterator<Clause>(p.clauses);
             while (formulaB.hasNext()){
-                Clause joinedClause = formulaA.next().merge(formulaB.next());
-                if (joinedClause==null){
-                    return new Formula(new Clause());
-                } else {
-                    x = x.addClause(joinedClause);    
-                }
+                Clause joinedClause = y.merge(formulaB.next());
+                x = x.addClause(joinedClause);    
                 
             }
         }
@@ -178,6 +174,8 @@ public class Formula {
                 Clause singleliteralclause = new Clause(l.getNegation());
                 subformula = subformula.addClause(singleliteralclause);
             }
+            //System.out.println("Subformula:");
+            //System.out.println(subformula.toString());
             if (x.getSize()==0){
                 x = subformula;
             } else {

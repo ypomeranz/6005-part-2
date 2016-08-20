@@ -22,6 +22,7 @@ public class FormulaTest {
         
         test1();
         test2();
+        test3();
     }
     
     public static void test1(){
@@ -32,24 +33,55 @@ public class FormulaTest {
         Literal nb = b.getNegation();
         Literal nc = c.getNegation();
         
+        
+        System.out.println("Test 1");
+        System.out.println("Convert clause to Formula, then add formula. \n Expected (a or b) and (~a or c) ");
         Clause clause1 = make(a,b);
         Clause clause2 = make(na, c);
         Formula formula1 = new Formula(clause1);
         System.out.println(formula1.toString());
         formula1 = formula1.addClause(clause2);
         System.out.println(formula1.toString());
+        System.out.println("Test 1 part b");
+        System.out.println("Convert to not:");
+        System.out.println("Expected - [(null),(~a~c),(~ba)(~b~c)");
         Formula formula2 = formula1.not();
         System.out.println(formula2.toString());
     }
     
     public static void test2(){
+        System.out.println("(a and b) or c");
+        System.out.println("expecting final result: [(a,c)(b,c)]");
+        Literal a = PosLiteral.make("a");
+        Literal b = PosLiteral.make("b");
+        Literal c = PosLiteral.make("c");
+        Clause clause1 = make(a);
+        Clause clause2 = make(b);
+        Clause clause3 = make(c);
+        Formula f1 = new Formula(clause1);
+        Formula f2 = new Formula(clause2);
+        f1 = f1.and(f2);
+        System.out.println("first, expecting a and b - if 'and' method works");
+        System.out.println(f1.toString());
+        f2 = new Formula(clause3);
+        Formula testtwo = f1.or(f2);
+        System.out.println(testtwo.toString());
+    }
+    
+    public static void test3(){
+        System.out.println("Test 3");
+        System.out.println("(a,b) and (c,d,e)");
+        System.out.println("with not");
+        System.out.println("expected result: six clauses:");
+        System.out.println("~a,~c  ~a ~d ~a~e  and the same for 'b' and the other three");
         Literal a = PosLiteral.make("a");
         Literal b = PosLiteral.make("b");
         Literal c = PosLiteral.make("c");
         Literal d = PosLiteral.make("d");
+        Literal e = PosLiteral.make("e");
         
         Clause clause1 = make(a,b);
-        Clause clause2 = make(c,d);
+        Clause clause2 = make(c,d,e);
         Formula f = new Formula(clause1);
         f = f.addClause(clause2);
         f = f.not();
