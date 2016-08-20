@@ -47,8 +47,9 @@ public class SATSolver {
         //Along the way - check if the list
         ImList<Clause> clauzlist = new EmptyImList<Clause>();
         for (Clause clause : clauses){
+            x = new Clause(); 
             for (Literal l : clause){
-                x = new Clause(); 
+                
                 Bool lstatus = l.eval(env);
                 if (lstatus == Bool.TRUE){
                     x = null;
@@ -61,14 +62,16 @@ public class SATSolver {
             }
             //check to see if it's an empty clause - if there exists even one, we fail and return null
             //also check to see if everything is null - if one is not null, then we won't return yet...
-            if (x.isEmpty()){
+            if (x != null && x.isEmpty()){
                 return null;
             } else if (x != null && allnull==true){
                 allnull = false;
             }
             //for simplicity - our new list of clauses will contain only non-null clauses 
             if (x != null){
-                clauzlist.add(x);
+                System.out.println(x.toString());
+                clauzlist = clauzlist.add(x);
+                System.out.println(clauzlist.toString());
             }
         }
         
@@ -82,6 +85,8 @@ public class SATSolver {
         //so we change the environment by setting the status of a variable
         //best case scenario - there's a clause with only one literal
         //otherwise remember the smallest clause
+        System.out.println("printing clauzlist");
+        System.out.println(clauzlist.toString());
         int smallest = -1;
         Clause smallestclauz = new Clause();
         for (Clause clause : clauzlist){
@@ -106,8 +111,9 @@ public class SATSolver {
         }
         //at this point we've gone through the clauzlist and have a smallest clause that isn't of size 1
         //so pick a random literal - set to true, then recurse
+        System.out.println(smallestclauz.toString());
         Literal a = smallestclauz.chooseLiteral();
-        Boolean littruth;
+        Boolean littruth = false;
         if (a.toString().charAt(0)=='~'){
             newenv = env.putFalse(a.getVariable());
             littruth = false;
@@ -143,5 +149,7 @@ public class SATSolver {
         // TODO: implement this.
         throw new RuntimeException("not yet implemented.");
     }
+    
+
 
 }
