@@ -12,7 +12,7 @@ import java.io.FileReader;
 
 import sat.env.Environment;
 import sat.env.Variable;
-import sat.formula.Formula;
+import sat.formula.*;
 
 /**
  * Sudoku is an immutable abstract datatype representing instances of Sudoku.
@@ -54,12 +54,12 @@ public class Sudoku {
         this.size = dim*dim;
         this.square = new int[dim*dim][dim*dim];
         this.occupies = new Variable[size][size][size*size];
-        int k = 0;
         for (int i = 0; i < (dim*dim); i++){
             for (int j = 0; j < (dim*dim); j++){
                 square[i][j]=0;
-                occupies[i][j][k] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(k));
-                k++;
+                for (int k=1; k <= size; k++)
+                    occupies[i][j][k] = new Variable(Integer.toString(i)+Integer.toString(j)+Integer.toString(k));
+                
             }
         }
     }
@@ -88,12 +88,12 @@ public class Sudoku {
         this.size = dim*dim;
         this.square = square;
         this.occupies = new Variable[dim*dim][dim*dim][size*size];
-        int k = 0;
+        
         for (int i = 0; i < size; i++){
             for (int j = 0; j < size; j++){
-                
-                occupies[i][j][k] = new Variable(Integer.toString(i)+","+Integer.toString(j)+","+Integer.toString(k));
-                k++;
+                for (int k = 1; k <= size; k++){
+                    occupies[i][j][k] = new Variable(Integer.toString(i)+Integer.toString(j)+Integer.toString(k));
+                }
             }
         }
     }
@@ -184,8 +184,149 @@ public class Sudoku {
      */
     public Formula getProblem() {
 
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        //part 1 - variables in the starting grid have to be true
+        Formula formula1 = new Formula();
+        for (int i = 0; i < this.size; i++){
+            for (int j = 0; j < this.size; j++){
+                if (this.square[i][j] > 0){
+                    formula1 = formula1.addClause(new Clause(PosLiteral.make(occupies[i][j][square[i][j]])));
+                }
+            }
+        }
+        
+        //part 2 - at most one digit per square
+        Formula formula2 = new Formula();
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size; j++){
+                
+                for (int k = 1; k <= size; k++){
+                    for (int kprime = 1; kprime <= size; kprime++){
+                        if (k !=  kprime){
+                            Clause tempclause = new Clause(NegLiteral.make(occupies[i][j][k]));
+                            tempclause = tempclause.add(NegLiteral.make(occupies[i][j][kprime]));
+                            formula2 = formula2.addClause(tempclause);
+                        }
+                    }
+                }   
+            }
+        }
+        
+        //part 3 - each digit exactly once in each row
+        //3 a - each digit at least once in each row
+        Formula formula3a = new Formula();
+        for (int i = 0; i < size; i++){
+            for (int k = 1; k <= size; k++){
+                Clause tempclause = new Clause();
+                for (int j = 0; j < size; j++){
+                    tempclause = tempclause.add(PosLiteral.make(occupies[i][j][k]));
+                }
+                formula3a = formula3a.addClause(tempclause);
+            }
+        }
+        
+        //3b - each digit no more than once in each row
+        Formula formula3b = new Formula();
+        for (int i = 0; i < size; i++){
+            for (int k = 1; k <= size; k++){
+                
+                for (int j = 0; j < size; j++){
+                    for (int jprime = 0; jprime < size; jprime++){
+                        if (j != jprime){
+                            Clause tempclause = new Clause();
+                            tempclause = tempclause.add(NegLiteral.make(occupies[i][j][k]));
+                            tempclause = tempclause.add(NegLiteral.make(occupies[i][jprime][k]));
+                            formula3b = formula3b.addClause(tempclause);
+                        }
+                        
+                    }
+                }
+            }
+        }
+        //part 4 - digit no more than once in each column
+        Formula formula4a = new Formula();
+        for (int j = 0; j < size; j++){
+            for (int k = 1; k <= size; k++){
+                Clause tempclause = new Clause();
+                for (int i = 0; i < size; i++){
+                    tempclause = tempclause.add(PosLiteral.make(occupies[i][j][k]));
+                }
+                formula4a = formula4a.addClause(tempclause);
+            }
+        }
+        Formula formula4b = new Formula();
+        for (int j = 0; j < size; j++){
+            for (int k = 1; k <= size; k++){
+                
+                for (int i = 0; i < size; i++){
+                    for (int iprime = 0; iprime < size; iprime++){
+                        if (i != iprime){
+                            Clause tempclause = new Clause();
+                            tempclause = tempclause.add(NegLiteral.make(occupies[i][j][k]));
+                            tempclause = tempclause.add(NegLiteral.make(occupies[iprime][j][k]));
+                            formula4b = formula4b.addClause(tempclause);
+                        }
+                        
+                    }
+                }
+            }
+        }        
+        
+        //part 5 - each digit exactly once in each section
+        
+        //part 5a - every digit at least once in each section
+        Formula formula5a = new Formula();
+        
+        for (int vblock = 0; vblock<dim; vblock++){
+            for (int hblock = 0; hblock<dim; hblock++){
+                for (int k = 1; k <= size; k++){
+                    Clause tempclause = new Clause();
+                    for (int i = 0; i<dim; i++){
+                        for (int j = 0; j<dim; j++){
+                            tempclause = tempclause.add(PosLiteral.make(occupies[(vblock*dim)+i][(hblock*dim)+j][k]));
+                        }
+                    }
+                    formula5a = formula5a.addClause(tempclause);
+                }
+            }
+        }
+        
+        //part 5b - every digit no more than once in each section
+        Formula formula5b = new Formula();
+        
+        for (int vblock = 0; vblock<dim; vblock++){
+            for (int hblock = 0; hblock<dim; hblock++){
+                for (int k =1; k<= size; k++){
+                    for (int i = 0; i<dim; i++){
+                        for (int j = 0; j < dim; j++){
+                            for (int iprime = 0; iprime < dim; iprime++){
+                                for (int jprime = 0; jprime <dim; jprime++){
+                                    if (iprime != i || jprime != j){
+                                        Clause tempclause = new Clause();
+                                        tempclause = tempclause.add
+                                            (NegLiteral.make(occupies[(vblock*dim)+i][(hblock*dim)+j][k]));
+                                        tempclause = tempclause.add
+                                            (NegLiteral.make(occupies[(vblock*dim)+iprime][(hblock*dim)+jprime][k]));
+                                        formula5b = formula5b.addClause(tempclause);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        Formula finalformula = new Formula();
+        finalformula = finalformula.and(formula1);
+        finalformula = finalformula.and(formula2);
+        finalformula = finalformula.and(formula3a);
+        finalformula = finalformula.and(formula3b);
+        finalformula = finalformula.and(formula4a);
+        finalformula = finalformula.and(formula4b);
+        finalformula = finalformula.and(formula5a);
+        finalformula = finalformula.and(formula5b);
+        
+        return finalformula;
     }
 
     /**
