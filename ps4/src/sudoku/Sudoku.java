@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import sat.env.Environment;
-import sat.env.Variable;
+import sat.env.*;
 import sat.formula.*;
 
 /**
@@ -339,9 +338,18 @@ public class Sudoku {
      *         blank entries.
      */
     public Sudoku interpretSolution(Environment e) {
-
-        // TODO: implement this.
-        throw new RuntimeException("not yet implemented.");
+        int[][] solution = new int[size][size];
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size; j++){
+                for (int k = 1; k <= size; k++){
+                    if (e.get(occupies[i][j][k])==Bool.TRUE){
+                        solution[i][j]=k;
+                        break;
+                    } 
+                }
+            }
+        }
+        return new Sudoku(dim, solution);
     }
 
 }
